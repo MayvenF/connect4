@@ -13,74 +13,97 @@ import './styles.css';
 // also we dont care if we click on a cell, we care about the row id! so lets put the handleclick in the row div
 // after we change state, everything gets rerendered
 
-function dropChip(id, gameState, setGameState){
-    var newArray = Array.from(gameState) // create a copy of the array
+function dropChip(col, gameState, setGameState){
+    let newArray = gameState.slice() // create a copy of the array
     let i = 0;
-    while(!newArray[i][id%7] && i != newArray.length - 1){ i++ }
+    while(i != newArray.length && !newArray[i][col]){ i++ }
 
-    if(i){ newArray[i][id%7] = 1; }
-    
+    if(i){ newArray[i-1][col] = 1; }
+    console.log("i is ", i)
     setGameState(newArray) // set the new gameState
-    id = i*7 + id%7
-    console.log("the chosen id is: ", id)
-    return id
+
 }
 
-// i need to b) loop through the array downwards until there is a number and then place my number on top
-function Cell(props){
-    const [wasChosen, setWasChosen] = useState(false)
+// // i need to b) loop through the array downwards until there is a number and then place my number on top
+// function Cell(props){
+//     const [wasChosen, setWas Chosen] = useState(false)
 
-    console.log("in cell and wasChosen for id ", props.id, " is ", wasChosen)
-    if (props.id === props.cellToColorId){
-        setWasChosen(true)
-    }
-    return(
-        <button 
-        style={{backgroundColor: (wasChosen) ? "red" : null}} 
-        className="circle-peg" 
-        onClick={() => {
-            props.handleClick(props.id)}}>
-        </button>  
-    )
-}
+//     console.log("in cell and wasChosen for id ", props.id, " is ", wasChosen)
+//     if (props.id === props.cellToColorId){
+//         setWasChosen(true)
+//     }
+//     return(
+//         <button 
+//         style={{backgroundColor: (wasChosen) ? "red" : null}} 
+//         className="circle-peg" 
+//         onClick={() => {
+//             props.handleClick(props.id)}}>
+//         </button>  
+//     )
+// }
 
 
-function Row(props){
-    const cells = Array.from(
-        Array(props.cols).keys())
-        .map(id => <Cell 
-            key={props.id*props.cols + id} 
-            id={props.id*props.cols + id}
-            chosenCellId={props.chosenCellId}
-            handleClick={props.handleClick}
-            />)
+// function Row(props){
+//     const cells = Array.from(
+//         Array(props.cols).keys())
+//         .map(id => <Cell 
+//             key={props.id*props.cols + id} 
+//             id={props.id*props.cols + id}
+//             chosenCellId={props.chosenCellId}
+//             handleClick={props.handleClick}
+//             />)
     
-    return(
-        <div className="row">
-            {cells}
-        </div>
-    )   
-}
+//     return(
+//         <div className="row">
+//             {cells}
+//         </div>
+//     )   
+// }
 
 function fillStateArray(rows, cols){
     return Array.from(Array(rows), () => new Array(cols).fill(0));
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function Cell({status, col, handleClick}){
+    console.log("i am a cell and my column is ", col, " and my value is ", status)
+    let color = "grey"
+    
+    if (status === 1) { color = "red"}
+    else if (status === 2) { color = "black"}
+
+    return (
+        <button style={{backgroundColor: color}} className='circle-peg' onClick={() => handleClick(col)}></button>
+    )
+}
+
 function Board(props){
     const [isHumanTurn, setIsHumanTurn] = useState(true)
     const [gameState, setGameState] = useState(fillStateArray(props.rows, props.cols)) // gameState is a nested array that represents the connect 4 board
-    const [chosenCellId, setChosenCellId] = useState(null)
 
-    const handleClick = (id) => {
+    const handleClick = (col) => {
         if(isHumanTurn) {
             // update game state to reflect human's move
-            const cellToColorId = dropChip(id, gameState, setGameState) 
-            setChosenCellId(cellToColorId)  // sets the humans move
+            dropChip(col, gameState, setGameState) 
 
             // computer's turn!
             setIsHumanTurn(false)
-
+            console.log(gameState)
             // get and set computer's move
             setGameState(() => {
                 return gameState
@@ -95,20 +118,16 @@ function Board(props){
         }
     };     
 
-    const rows = Array.from(
-        Array(props.rows).keys())
-        .map(id => <Row 
-            key={id} 
-            id={id} 
-            cols={props.cols}
-            chosenCellId={chosenCellId}
-            handleClick={handleClick}
-            />)
+    
 
         
     return(
         <div className='board'>
-            {rows}
+            {gameState.map((row, i) => 
+            <div key={i} className="row">
+                {row.map((cell, j) => 
+                    <Cell key={i*j + j} status={cell} col={j} handleClick={handleClick} />)}
+            </div>)}
         </div>
     )
 }
