@@ -96,22 +96,19 @@ function Board(props){
     const [isHumanTurn, setIsHumanTurn] = useState(true)
     const [gameState, setGameState] = useState(fillStateArray(props.rows, props.cols)) // gameState is a nested array that represents the connect 4 board
 
-    const handleClick = (col) => {
+    function handleClick(col){
         if(isHumanTurn) {
             // update game state to reflect human's move
-            dropChip(col, gameState, setGameState) 
-
-            // computer's turn!
-            setIsHumanTurn(false)
-            console.log(gameState)
+           dropChip(col, gameState, setGameState) 
             // get and set computer's move
-            setGameState(() => {
-                return gameState
-                // fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
-                // .then((response) => response.json())
-                // .then((data) => console.log(data))
-                // .catch((err) => console.log(err))
-            })
+
+            // setGameState(() => {
+            //     return gameState
+            //     // fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
+            //     // .then((response) => response.json())
+            //     // .then((data) => console.log(data))
+            //     // .catch((err) => console.log(err))
+            // })
             
             // need to render the computers decision on the UI (aka setCellToColor)
             setIsHumanTurn(true)
