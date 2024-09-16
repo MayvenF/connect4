@@ -24,64 +24,13 @@ function dropChip(col, gameState, setGameState){
 
 }
 
-// // i need to b) loop through the array downwards until there is a number and then place my number on top
-// function Cell(props){
-//     const [wasChosen, setWas Chosen] = useState(false)
-
-//     console.log("in cell and wasChosen for id ", props.id, " is ", wasChosen)
-//     if (props.id === props.cellToColorId){
-//         setWasChosen(true)
-//     }
-//     return(
-//         <button 
-//         style={{backgroundColor: (wasChosen) ? "red" : null}} 
-//         className="circle-peg" 
-//         onClick={() => {
-//             props.handleClick(props.id)}}>
-//         </button>  
-//     )
-// }
-
-
-// function Row(props){
-//     const cells = Array.from(
-//         Array(props.cols).keys())
-//         .map(id => <Cell 
-//             key={props.id*props.cols + id} 
-//             id={props.id*props.cols + id}
-//             chosenCellId={props.chosenCellId}
-//             handleClick={props.handleClick}
-//             />)
-    
-//     return(
-//         <div className="row">
-//             {cells}
-//         </div>
-//     )   
-// }
 
 function fillStateArray(rows, cols){
     return Array.from(Array(rows), () => new Array(cols).fill(0));
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function Cell({status, col, handleClick}){
-    console.log("i am a cell and my column is ", col, " and my value is ", status)
     let color = "grey"
     
     if (status === 1) { color = "red"}
