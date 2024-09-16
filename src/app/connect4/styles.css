@@ -1,0 +1,17 @@
+.row {
+    margin-top: 10px;
+}
+
+.board{
+    display: grid;
+    grid-column-gap: 30px;
+    justify-content: center;
+}
+
+.circle-peg {
+    border-color: black;
+    border-radius: 50%;
+    height: 70px;
+    width: 70px;
+    margin-right: 10px;
+}
