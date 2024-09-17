@@ -47,47 +47,13 @@ function Cell({status, col, handleClick}){
 
 
 function Board(props){
-    const [isHumanTurn, setIsHumanTurn] = useState(true)
-    const [gameState, setGameState] = useState(fillStateArray(props.rows, props.cols)) // gameState is a nested array that represents the connect 4 board
-
-    const getAIMove = async (gameState) => {
-        const data = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
-        const response = await data.json()
-        console.log(response)
-        return response;
-    }
-
-    const handleClick = async (col) => {
-        if(isHumanTurn) {
-           
-           setGameState(dropChip(col, gameState))
-           
-            const data = await getAIMove(gameState)
-            var col2 = rdmIdx(7)
-            var i = gameState[rdmIdx(6)][col2]
-            console.log(i)
-            while (i) {
-                col2 = rdmIdx(7)
-                i = gameState[rdmIdx(6)][col2]
-            }
-            
-            setGameState(dropChip(col2, gameState))
-            // need to render the computers decision on the UI (aka setCellToColor)
-            setIsHumanTurn(true)
-        }
-    };     
-
-    useEffect(() => {
-        handleClick()
-    }, [])
-
         
     return(
         <div className='board'>
-            {gameState.map((row, i) => 
+            {props.gameState.map((row, i) => 
             <div key={i} className="row">
                 {row.map((cell, j) => 
-                    <Cell key={i*props.rows + j} status={cell} col={j} handleClick={handleClick} />)}
+                    <Cell key={i*props.gameState[0].length + j} status={cell} col={j} handleClick={props.handleClick} />)}
             </div>)}
         </div>
     )
@@ -97,8 +63,44 @@ export default function Game(){
     const rows=6
     const cols=7
 
+    const [isHumanTurn, setIsHumanTurn] = useState(true)
+    const [gameState, setGameState] = useState(fillStateArray(rows, cols)) // gameState is a nested array that represents the connect 4 board
+
+    const getAIMove = async () => {
+        const data = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
+        const response = await data.json()
+        console.log(response)
+        return response;
+    }
+
+    const getRandomMove = () => {
+        var col2 = rdmIdx(7)
+        var i = gameState[rdmIdx(6)][col2]
+        console.log(i)
+        while (i) {
+            col2 = rdmIdx(7)
+            i = gameState[rdmIdx(6)][col2]
+        }
+        return col2
+    }
+
+    const handleClick = async (humanChoice) => {
+        if(isHumanTurn) {
+           
+           setGameState(dropChip(humanChoice, gameState))
+           
+            const data = await getAIMove(gameState) // holds the API call
+            const computerChoice = getRandomMove()
+            
+            setGameState(dropChip(computerChoice, gameState))
+            
+            setIsHumanTurn(true)
+        }
+    };     
+
+
     return (
-        <Board rows={rows} cols={cols} />
+        <Board gameState={gameState} handleClick={handleClick} />
     )
 
 }
