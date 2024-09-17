@@ -20,7 +20,7 @@ function dropChip(col, gameState, setGameState){
 
     if(i){ newArray[i-1][col] = 1; }
     console.log("i is ", i)
-    setGameState(newArray) // set the new gameState
+    return newArray
 
 }
 
@@ -29,6 +29,9 @@ function fillStateArray(rows, cols){
     return Array.from(Array(rows), () => new Array(cols).fill(0));
 }
 
+function rdmIdx(i){
+    return Math.floor(Math.random() * i)
+}
 
 function Cell({status, col, handleClick}){
     let color = "grey"
@@ -41,30 +44,42 @@ function Cell({status, col, handleClick}){
     )
 }
 
+
+
 function Board(props){
     const [isHumanTurn, setIsHumanTurn] = useState(true)
     const [gameState, setGameState] = useState(fillStateArray(props.rows, props.cols)) // gameState is a nested array that represents the connect 4 board
 
-    function handleClick(col){
-        if(isHumanTurn) {
-            // update game state to reflect human's move
-           dropChip(col, gameState, setGameState) 
-            // get and set computer's move
+    const getAIMove = async (gameState) => {
+        const data = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
+        const response = await data.json()
+        console.log(response)
+        return response;
+    }
 
-            // setGameState(() => {
-            //     return gameState
-            //     // fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
-            //     // .then((response) => response.json())
-            //     // .then((data) => console.log(data))
-            //     // .catch((err) => console.log(err))
-            // })
+    const handleClick = async (col) => {
+        if(isHumanTurn) {
+           
+           setGameState(dropChip(col, gameState))
+           
+            const data = await getAIMove(gameState)
+            var col2 = rdmIdx(7)
+            var i = gameState[rdmIdx(6)][col2]
+            console.log(i)
+            while (i) {
+                col2 = rdmIdx(7)
+                i = gameState[rdmIdx(6)][col2]
+            }
             
+            setGameState(dropChip(col2, gameState))
             // need to render the computers decision on the UI (aka setCellToColor)
             setIsHumanTurn(true)
         }
     };     
 
-    
+    useEffect(() => {
+        handleClick()
+    }, [])
 
         
     return(
@@ -72,7 +87,7 @@ function Board(props){
             {gameState.map((row, i) => 
             <div key={i} className="row">
                 {row.map((cell, j) => 
-                    <Cell key={i*j + j} status={cell} col={j} handleClick={handleClick} />)}
+                    <Cell key={i*props.rows + j} status={cell} col={j} handleClick={handleClick} />)}
             </div>)}
         </div>
     )
