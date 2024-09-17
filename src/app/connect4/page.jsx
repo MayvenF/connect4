@@ -1,12 +1,12 @@
 import Menu from "../components/Menu"
-import Board from "./Board"
+import Game from "./Game"
 
 
 export default function Connect4Page(){
     return (
         <div>
             <Menu />
-            <Board />
+            <Game />
         </div>
     )
 }

@@ -15,3 +15,11 @@
     width: 70px;
     margin-right: 10px;
 }
+
+
+.winner-display {
+    margin-top: 20px;
+    display: grid;
+    justify-content: center;
+}
+
